@@ -1,3 +1,5 @@
+
+
 # write your code here
 middle_result = 0
 
