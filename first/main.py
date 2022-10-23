@@ -1,6 +1,4 @@
-
-
-# write your code here
+# var for save middle result
 middle_result = 0
 
 
@@ -16,6 +14,32 @@ def msg_print(m_number):
         print("Do you want to store the result? (y / n):")
     elif m_number == 5:
         print("Do you want to continue calculations? (y / n):")
+
+
+# проверка введенных цифры (isonedigit)
+def is_one_digit(v):
+    if (-10 < v < 10) and v.is_integer() == True: return True
+    else: return False
+
+
+# проверка данных
+def check(v1, v2, v3):
+    msg = ""
+    msg_6 = " ... lazy"
+    msg_7 = " ... very lazy"
+    msg_8 = " ... very, very lazy"
+    msg_9 = "You are"
+
+
+    if is_one_digit(v1) == True and is_one_digit(v3) == True:
+        msg += msg_6
+    if (v1 == 1 or v3 == 1) and v2 =='*':
+        msg += msg_7
+    if (v1 == 0 or v3 == 0) and (v2 == '*' or v2 == '+' or v2 == '-'):
+        msg += msg_8
+    if msg != '':
+        msg = msg_9 + msg
+        print(msg)
 
 
 # запрашиваем ввод у пользователя
@@ -34,16 +58,23 @@ def input_processing(calc_inp):
         x = float(x)
         y = float(y)
     except:
-        if x == 'M': x = middle_result
-        elif y == 'M': y = middle_result
-        else:
+        if (x != 'M' and x.is_integer() == False) or (y != 'M' and y.is_integer() == False):
             msg_print(1)
             return False
+        if x == 'M':
+            x = float(middle_result)
+        if y == 'M':
+            y = float(middle_result)
+
+
+
 
     # проверяем oper является ли корректным оператором математическим
     if oper != '+' and oper != '-' and oper != '/' and oper != '*':
         msg_print(2)
         return False
+
+    check(x,oper,y)
 
     # считаем с учетом заданных параметров
     if oper == '/' and y != 0:
@@ -58,6 +89,7 @@ def input_processing(calc_inp):
         if oper == '/' and y == 0:
             msg_print(3)
             return False
+
 
 # сохранение результата
 def save_midl_result(temp_result):
@@ -81,16 +113,17 @@ def save_midl_result(temp_result):
 # основной цикл который работает пока есть неправильные данные на входе
 while True:
     final_result = input_processing(user_input_func())
-    if final_result == False:
+    if final_result is False:
         continue
     else:
-        print (final_result)
+        print(final_result)
 
+        # функция сохранения промежуточного результата
         save_midl_result(final_result)
-
 
         # спрашиваем пользователя будет ли он еще раз чтото считать
         msg_print(5)
         if str(input()) == 'y':
             continue
-        else: break
+        else:
+            break
