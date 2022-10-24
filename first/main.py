@@ -4,22 +4,44 @@ middle_result = 0
 
 # функция выдачи ошибок пользователю
 def msg_print(m_number):
-    if m_number == 1:
-        print("Do you even know what numbers are? Stay focused!")
-    elif m_number == 2:
-        print("Yes ... an interesting math operation. You've slept through all classes, haven't you?")
-    elif m_number == 3:
-        print("Yeah... division by zero. Smart move...")
-    elif m_number == 4:
-        print("Do you want to store the result? (y / n):")
-    elif m_number == 5:
-        print("Do you want to continue calculations? (y / n):")
+     if m_number == 1:
+         print("Do you even know what numbers are? Stay focused!")
+     elif m_number == 2:
+         print("Yes ... an interesting math operation. You've slept through all classes, haven't you?")
+     elif m_number == 3:
+         print("Yeah... division by zero. Smart move...")
+     elif m_number == 4:
+         print("Do you want to store the result? (y / n):")
+     elif m_number == 5:
+         print("Do you want to continue calculations? (y / n):")
+     elif m_number == 10:
+         print("Are you sure? It is only one digit! (y / n)")
+     elif m_number == 11:
+         print("Don't be silly! It's just one number! Add to the memory? (y / n)")
+     elif m_number == 12:
+         print("Last chance! Do you really want to embarrass yourself? (y / n)")
 
 
 # проверка введенных цифры (isonedigit)
 def is_one_digit(v):
-    if (-10 < v < 10) and v.is_integer() == True: return True
-    else: return False
+#    print('this is DigitCheck =', v)
+    if -10 < v < 10:
+        try:
+            if v == int(v):
+#                print('----> T one digit')
+                return True
+
+        except:
+#            print('----> F one digit')
+            return False
+
+
+    # if (-10 < v < 10) and v == int(v):
+    #     print('----> T one digit')
+    #     return True
+    # else:
+    #     print('----> F one digit')
+    #     return False
 
 
 # проверка данных
@@ -49,32 +71,54 @@ def user_input_func():
     return calc
 
 
-# проверяем ввод на корректность
+# проверяем ввод данных для расчета от пользователя на корректность
 def input_processing(calc_inp):
     x, oper, y = calc_inp.split()
 
     # проверяем введенные данные на то цифры это или нет
     try:
         x = float(x)
-        y = float(y)
     except:
-        if (x != 'M' and x.is_integer() == False) or (y != 'M' and y.is_integer() == False):
+        if x != 'M':
             msg_print(1)
             return False
-        if x == 'M':
+        else:
             x = float(middle_result)
-        if y == 'M':
+
+    try:
+        y = float(y)
+    except:
+        if y != 'M':
+            msg_print(1)
+            return False
+        else:
             y = float(middle_result)
 
+    # x, oper, y = calc_inp.split()
+    #
+    # # проверяем введенные данные на то цифры это или нет
+    # try:
+    #     x = float(x)
+    #     y = float(y)
+    # except:
+    #     if (x != 'M' and x == int(x)) or (y != 'M' and y == int(y)):
+    #         msg_print(1)
+    #         return False
+    #     if x == 'M':
+    #         x = float(middle_result)
+    #     if y == 'M':
+    #         y = float(middle_result)
 
 
 
-    # проверяем oper является ли корректным оператором математическим
+
+    # проверяем oper является ли корректным математическим оператором
     if oper != '+' and oper != '-' and oper != '/' and oper != '*':
         msg_print(2)
         return False
 
-    check(x,oper,y)
+    # проверка на ленивость
+    check(x, oper, y)
 
     # считаем с учетом заданных параметров
     if oper == '/' and y != 0:
@@ -95,6 +139,7 @@ def input_processing(calc_inp):
 def save_midl_result(temp_result):
     global middle_result
     save_result_opt = ''
+    msg_index = 10
 
     while save_result_opt != 'y':
 
@@ -102,12 +147,33 @@ def save_midl_result(temp_result):
 
         save_result_opt = str(input())
         if save_result_opt == 'y':
-            middle_result = temp_result
+
+            ###
+            # print('Check digit right before save result', middle_result)
+            if is_one_digit(temp_result) == True:
+
+                while True:
+                    msg_print(msg_index)
+                    one_dig_answer = str(input())
+                    if one_dig_answer == 'y':
+                        if msg_index < 12:
+                            msg_index += 1
+                        else:
+                            middle_result = temp_result
+                            break
+
+                    elif one_dig_answer == 'n':
+                        break
+            else:
+                middle_result = temp_result
+                break
+
+            ###
+
+        elif save_result_opt == 'n':
             break
-        elif save_result_opt != 'n' and save_result_opt != 'y':
-            continue
         else:
-            break
+            continue
 
 
 # основной цикл который работает пока есть неправильные данные на входе
